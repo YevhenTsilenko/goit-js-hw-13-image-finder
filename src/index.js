@@ -10,11 +10,12 @@ const refs = {
     form : document.querySelector('#search-form'),
     imageList : document.querySelector('.gallery'),
     button : document.querySelector('[data-action="show-more"]'),
+    body : document.body,
 }
 
 
 refs.form.addEventListener('submit', onSearch);
-refs.button.addEventListener('click', showMore);
+refs.button.addEventListener('click', showMoreImages);
 
 function onSearch (event) {
     event.preventDefault();
@@ -37,28 +38,31 @@ async function createImages() {
     try {
         const images = await fetchImg();
         if(images.length === 0) {
+            refs.button.classList.add('is-hidden');
             error({
                 title: 'Error',
-                text: 'try another word',
+                text: 'Try another word',
               });
         }
         renderImages(images);
-        btnScrollElem();
-        
+        refs.button.classList.remove('is-hidden');
+
     } catch (error){
         console.log(error);
     }
 }
 
-async function showMore() {
+function showMoreImages () {
     createImages();
+    setTimeout(buttonScrollElem, 500);
 }
+
 
 function clearImageList() {
     refs.imageList.innerHTML='';
   }
 
-function btnScrollElem() {
+function buttonScrollElem() {
     refs.button.scrollIntoView({
       behavior: 'smooth',
       block: 'end',
